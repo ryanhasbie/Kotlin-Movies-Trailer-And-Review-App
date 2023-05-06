@@ -2,6 +2,8 @@ package com.ryan.movies.view
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -11,6 +13,7 @@ import com.ryan.movies.constant.Constant
 import com.ryan.movies.databinding.ActivityDetailBinding
 import com.ryan.movies.model.response.DetailMovieResponse
 import com.ryan.movies.retrofit.ApiService
+import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,16 +30,18 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(findViewById(R.id.toolbar))
-        binding.toolbarLayout.title = title
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        binding.toolbarLayout.title = ""
+        setupView()
     }
 
     override fun onStart() {
         super.onStart()
         getMovieDetail()
+    }
+
+    private fun setupView() {
+        supportActionBar!!.title = ""
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun getMovieDetail() {
@@ -59,6 +64,31 @@ class DetailActivity : AppCompatActivity() {
     }
 
     fun showMovie(detailMovie: DetailMovieResponse) {
-        Log.d(TAG, "overViewResponse: ${detailMovie.overview}")
+        val backdropPath = Constant.BACKDROP_PATH + detailMovie.backdrop_path
+
+        val imageBackdrop = findViewById<ImageView>(R.id.image_backdrop)
+        val textTitle = findViewById<TextView>(R.id.textTitle)
+        val textVote = findViewById<TextView>(R.id.textVote)
+        val textOverview = findViewById<TextView>(R.id.textOverview)
+        val textGenre = findViewById<TextView>(R.id.textGenre)
+
+        Picasso.get()
+            .load(backdropPath)
+            .fit()
+            .centerCrop()
+            .into(imageBackdrop)
+        textTitle.text = detailMovie.title
+        textVote.text = detailMovie.vote_average.toString()
+        textOverview.text = detailMovie.overview
+
+        for (genre in detailMovie.genres!!) {
+            textGenre.text = "${genre.name} "
+        }
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
     }
 }
