@@ -23,12 +23,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
+const val moviePopular =0
+const val movieNowPlaying = 1;
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val TAG: String = "MainActivity"
     lateinit var mainAdapter: MainAdapter
+    private var movieCategory = 0
+    private val api = ApiService().endpoint
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -72,7 +78,20 @@ class MainActivity : AppCompatActivity() {
 
     fun getMovie() {
         showLoading(true)
-        ApiService().endpoint.getMovieNowPlaying(Constant.API_KEY, 1)
+
+
+        var apiCall: Call<MovieResponse>? = null
+        when(movieCategory) {
+            moviePopular -> {
+                apiCall = api.getMoviePopular(Constant.API_KEY, 1)
+            }
+            movieNowPlaying -> {
+                apiCall = api.getMovieNowPlaying(Constant.API_KEY, 1)
+            }
+        }
+
+
+        apiCall!!
             .enqueue(object : Callback<MovieResponse> {
 
                 override fun onResponse(
@@ -122,7 +141,18 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_populars -> {
+                showMessage("Movie Populars Selected")
+                movieCategory = moviePopular
+                getMovie()
+                true
+            }
+            R.id.action_now_playings -> {
+                showMessage("Movie Now Playing Selected")
+                movieCategory = movieNowPlaying
+                getMovie()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -12,5 +12,11 @@ interface ApiEndpoint {
         @Query("page") page: Int
     ): Call<MovieResponse>
 
+    @GET("popular")
+    fun getMoviePopular(
+        @Query("api_key") api_key:String,
+        @Query("page") page: Int
+    ): Call<MovieResponse>
+
 
 }
