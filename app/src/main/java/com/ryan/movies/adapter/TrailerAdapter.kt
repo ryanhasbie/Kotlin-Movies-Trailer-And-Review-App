@@ -46,7 +46,9 @@ class TrailerAdapter (private var videos: ArrayList<Trailer>, var listener: OnAd
         videos.clear()
         videos.addAll(newVideos)
         notifyDataSetChanged()
-        listener.onLoad(newVideos[0].key!!)
+        if (newVideos.isNotEmpty()) {
+            listener.onLoad(newVideos[0].key!!)
+        }
     }
 
     interface OnAdapterListener {

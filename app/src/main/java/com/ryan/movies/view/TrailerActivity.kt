@@ -14,6 +14,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import com.ryan.movies.R
 import com.ryan.movies.adapter.TrailerAdapter
 import com.ryan.movies.constant.Constant
+import com.ryan.movies.model.Trailer
 import com.ryan.movies.model.response.TrailerResponse
 import com.ryan.movies.retrofit.ApiService
 import retrofit2.Call
@@ -26,12 +27,12 @@ class TrailerActivity : AppCompatActivity() {
 
     lateinit var trailerAdapter: TrailerAdapter
     lateinit var youTubePlayer: YouTubePlayer
-    private var youTubeKey: String? = ""
+    private var youTubeKey: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trailer)
-//        setupView()
+        setupView()
         setupRecyclerView()
     }
 
