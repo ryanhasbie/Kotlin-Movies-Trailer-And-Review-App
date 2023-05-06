@@ -11,8 +11,13 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ryan.movies.R
+import com.ryan.movies.adapter.MainAdapter
 import com.ryan.movies.constant.ApiKey
 import com.ryan.movies.databinding.ActivityMainBinding
 import com.ryan.movies.model.response.MovieResponse
@@ -26,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val TAG: String = "MainActivity"
+    lateinit var mainAdapter: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -35,6 +41,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+
+        setupView()
+        setupRecyclerView()
 
 //        val navController = findNavController(R.id.nav_host_fragment_content_main)
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
@@ -52,7 +61,20 @@ class MainActivity : AppCompatActivity() {
         getMovie()
     }
 
+    private fun setupView() {}
+
+    private fun setupRecyclerView() {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        mainAdapter = MainAdapter(arrayListOf())
+        recyclerView.apply {
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = mainAdapter
+        }
+    }
+
+
     fun getMovie() {
+        showLoading(true)
         ApiService().endpoint.getMovieNowPlaying(ApiKey.API_KEY, 1)
             .enqueue(object : Callback<MovieResponse> {
 
@@ -60,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                     call: Call<MovieResponse>,
                     response: Response<MovieResponse>
                 ) {
+                   showLoading(false)
                    if (response.isSuccessful) {
                        showMovie(response.body()!!)
                    }
@@ -67,13 +90,24 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                     Log.d(TAG, t.toString())
+                    showLoading(false)
                 }
 
             })
     }
 
+    fun showLoading(loading: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        when (loading) {
+            true -> progressBar.visibility = View.VISIBLE
+            false -> progressBar.visibility = View.GONE
+        }
+
+    }
+
     fun showMovie(response: MovieResponse) {
-        Log.d(TAG, response.toString())
+//        Log.d(TAG, response.toString())
+        mainAdapter.setData(response.results)
     }
 
     fun showMessage(message: String) {
