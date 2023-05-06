@@ -8,21 +8,21 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiEndpoint {
-    @GET("/now_playing")
+    @GET("movie/now_playing")
     fun getMovieNowPlaying(
         @Query("api_key") api_key:String,
         @Query("page") page: Int
     ): Call<MovieResponse>
 
-    @GET("/popular")
+    @GET("movie/popular")
     fun getMoviePopular(
         @Query("api_key") api_key:String,
         @Query("page") page: Int
     ): Call<MovieResponse>
 
-    @GET("/{movieId}")
+    @GET("movie/{movieId}")
     fun getDetailMovie (
-        @Path("movieId") movieId:String,
+        @Path("movieId") movieId: Int,
         @Query("api_key") api_key:String,
     ): Call<DetailMovieResponse>
 
