@@ -17,6 +17,7 @@ import com.ryan.movies.R
 import com.ryan.movies.adapter.MainAdapter
 import com.ryan.movies.constant.Constant
 import com.ryan.movies.databinding.ActivityMainBinding
+import com.ryan.movies.model.Movie
 import com.ryan.movies.model.response.MovieResponse
 import com.ryan.movies.retrofit.ApiService
 import retrofit2.Call
@@ -68,7 +69,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        mainAdapter = MainAdapter(arrayListOf())
+        mainAdapter = MainAdapter(arrayListOf(), object: MainAdapter.OnAdapterListener {
+            override fun onClick(movie: Movie) {
+                showMessage(movie.title!!)
+            }
+
+        })
         recyclerView.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = mainAdapter

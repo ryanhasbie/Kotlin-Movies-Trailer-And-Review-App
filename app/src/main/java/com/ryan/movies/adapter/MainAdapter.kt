@@ -12,7 +12,7 @@ import com.ryan.movies.constant.Constant
 import com.ryan.movies.model.Movie
 import com.squareup.picasso.Picasso
 
-class MainAdapter (var movies: ArrayList<Movie>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter (var movies: ArrayList<Movie>, var listener: OnAdapterListener) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
     private val TAG: String = "MainActivity"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder (
@@ -27,6 +27,9 @@ class MainAdapter (var movies: ArrayList<Movie>) : RecyclerView.Adapter<MainAdap
         val posterPath = Constant.POSTER_PATH + movie.poster_path
         val imageView = holder.itemView.findViewById<ImageView>(R.id.img_poster)
         Picasso.get().load(posterPath).into(imageView);
+        imageView.setOnClickListener {
+            listener.onClick(movie)
+        }
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -40,5 +43,9 @@ class MainAdapter (var movies: ArrayList<Movie>) : RecyclerView.Adapter<MainAdap
         movies.clear()
         movies.addAll(newMovies)
         notifyDataSetChanged()
+    }
+
+    interface OnAdapterListener {
+        fun onClick (movie: Movie)
     }
 }
