@@ -26,7 +26,7 @@ class MainAdapter (var movies: ArrayList<Movie>, var listener: OnAdapterListener
         holder.bind(movie)
         val posterPath = Constant.POSTER_PATH + movie.poster_path
         val imageView = holder.itemView.findViewById<ImageView>(R.id.img_poster)
-        Picasso.get().load(posterPath).into(imageView);
+        Picasso.get().load(posterPath).into(imageView)
         imageView.setOnClickListener {
             listener.onClick(movie)
         }

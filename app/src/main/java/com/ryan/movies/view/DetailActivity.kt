@@ -1,5 +1,6 @@
 package com.ryan.movies.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -17,11 +18,12 @@ import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.DecimalFormat
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private val TAG: String = "MainActivity"
+    private val TAG: String = "DetailActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,7 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
         binding.toolbarLayout.title = ""
         setupView()
+        setupListener()
     }
 
     override fun onStart() {
@@ -42,6 +45,13 @@ class DetailActivity : AppCompatActivity() {
     private fun setupView() {
         supportActionBar!!.title = ""
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun setupListener() {
+        val fab = findViewById<FloatingActionButton>(R.id.fab_play)
+        fab.setOnClickListener {
+            startActivity(Intent(applicationContext, TrailerActivity::class.java))
+        }
     }
 
     private fun getMovieDetail() {
@@ -71,6 +81,7 @@ class DetailActivity : AppCompatActivity() {
         val textVote = findViewById<TextView>(R.id.textVote)
         val textOverview = findViewById<TextView>(R.id.textOverview)
         val textGenre = findViewById<TextView>(R.id.textGenre)
+        val decimalFormat = DecimalFormat("#.#")
 
         Picasso.get()
             .load(backdropPath)
@@ -78,7 +89,7 @@ class DetailActivity : AppCompatActivity() {
             .centerCrop()
             .into(imageBackdrop)
         textTitle.text = detailMovie.title
-        textVote.text = detailMovie.vote_average.toString()
+        textVote.text = decimalFormat.format(detailMovie.vote_average)
         textOverview.text = detailMovie.overview
 
         for (genre in detailMovie.genres!!) {
