@@ -13,7 +13,6 @@ import com.ryan.movies.model.Movie
 import com.squareup.picasso.Picasso
 
 class MainAdapter (var movies: ArrayList<Movie>, var listener: OnAdapterListener) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
-    private val TAG: String = "MainActivity"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder (
         LayoutInflater.from(parent.context).inflate(R.layout.adapter_main, parent, false)
