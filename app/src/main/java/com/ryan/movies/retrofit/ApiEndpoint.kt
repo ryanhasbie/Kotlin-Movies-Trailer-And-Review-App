@@ -2,6 +2,7 @@ package com.ryan.movies.retrofit
 
 import com.ryan.movies.model.response.DetailMovieResponse
 import com.ryan.movies.model.response.MovieResponse
+import com.ryan.movies.model.response.ReviewResponse
 import com.ryan.movies.model.response.TrailerResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -26,6 +27,12 @@ interface ApiEndpoint {
         @Path("movieId") movieId: Int,
         @Query("api_key") api_key:String,
     ): Call<DetailMovieResponse>
+
+    @GET("movie/{movieId}/reviews")
+    fun getReview (
+        @Path("movieId") movieId: Int,
+        @Query("api_key") api_key:String,
+    ): Call<ReviewResponse>
 
     @GET("movie/{movieId}/videos")
     fun getTrailer (

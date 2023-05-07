@@ -82,7 +82,7 @@
             app:layout_constraintTop_toBottomOf="@id/fab_play"
             app:layout_constraintStart_toStartOf="parent"
             android:textStyle="bold"
-            android:textSize="24sp"
+            android:textSize="20sp"
             />
 
         <TextView
@@ -94,6 +94,40 @@
             app:layout_constraintTop_toBottomOf="@+id/labelOverview"
             app:layout_constraintStart_toStartOf="parent"
             />
+
+        <TextView
+            android:id="@+id/labelReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="Review"
+            app:layout_constraintTop_toBottomOf="@+id/textOverview"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            />
+
+        <TextView
+            android:id="@+id/textAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            tools:text="Author"
+            app:layout_constraintTop_toBottomOf="@+id/labelReview"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/textContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            tools:text="Content"
+            app:layout_constraintTop_toBottomOf="@+id/textAuthor"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 package com.ryan.movies.model.response
 
 import com.ryan.movies.model.Genre
+import com.ryan.movies.model.Review
 
 data class DetailMovieResponse (
     val id: Int?,
@@ -10,5 +11,5 @@ data class DetailMovieResponse (
     val overview: String?,
     val release_date: String?,
     val genres: List<Genre>?,
-    val vote_average: Double?
+    val vote_average: Double?,
 )

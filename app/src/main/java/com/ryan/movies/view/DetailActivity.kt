@@ -3,16 +3,17 @@ package com.ryan.movies.view
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.ryan.movies.R
 import com.ryan.movies.constant.Constant
 import com.ryan.movies.databinding.ActivityDetailBinding
 import com.ryan.movies.model.response.DetailMovieResponse
+import com.ryan.movies.model.response.ReviewResponse
 import com.ryan.movies.retrofit.ApiService
 import com.squareup.picasso.Picasso
 import retrofit2.Call
@@ -24,6 +25,7 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
     private val TAG: String = "DetailActivity"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class DetailActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         getMovieDetail()
+        getReview()
     }
 
     private fun setupView() {
@@ -95,7 +98,38 @@ class DetailActivity : AppCompatActivity() {
         for (genre in detailMovie.genres!!) {
             textGenre.text = "${genre.name} "
         }
+    }
 
+    fun getReview() {
+        ApiService().endpoint.getReview(Constant.MOVIE_ID, Constant.API_KEY)
+            .enqueue(object : Callback<ReviewResponse> {
+                override fun onResponse(
+                    call: Call<ReviewResponse>,
+                    response: Response<ReviewResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        showReview(response.body()!!)
+                    }
+                }
+
+                override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
+                    Log.d(TAG, t.toString())
+                }
+
+            })
+    }
+
+    fun showReview(response: ReviewResponse) {
+        val textAuthor = findViewById<TextView>(R.id.textAuthor)
+        val textContent = findViewById<TextView>(R.id.textContent)
+//        val stringBuilder = StringBuilder()
+        for (rs in response.results) {
+//            stringBuilder.append("- ").append(rs).append("\n\n")
+            textAuthor.text = rs.author
+            textContent.text = rs.content
+            Log.d(TAG, "showReview: ${rs.author}")
+        }
+//        textAuthor.text = stringBuilder.toString()
     }
 
     override fun onSupportNavigateUp(): Boolean {
