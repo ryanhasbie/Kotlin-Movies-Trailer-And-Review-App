@@ -122,7 +122,7 @@ class DetailActivity : AppCompatActivity() {
     fun showReview(response: ReviewResponse) {
         val textAuthor = findViewById<TextView>(R.id.textAuthor)
         val textContent = findViewById<TextView>(R.id.textContent)
-//        val stringBuilder = StringBuilder()
+//        val stringBuilder = StringBuilder() // ketika menggunakan stringBuilder
         for (rs in response.results) {
 //            stringBuilder.append("- ").append(rs).append("\n\n")
             textAuthor.text = rs.author
