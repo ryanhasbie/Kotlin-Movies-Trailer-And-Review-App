@@ -1,4 +1,4 @@
-package com.ryan.movies.view
+package com.ryan.movies.activity
 
 
 import android.os.Bundle
@@ -14,7 +14,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import com.ryan.movies.R
 import com.ryan.movies.adapter.TrailerAdapter
 import com.ryan.movies.constant.Constant
-import com.ryan.movies.model.Trailer
 import com.ryan.movies.model.response.TrailerResponse
 import com.ryan.movies.retrofit.ApiService
 import retrofit2.Call

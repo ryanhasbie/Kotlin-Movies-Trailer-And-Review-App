@@ -15,20 +15,23 @@
         android:theme="@style/Theme.Movies"
         tools:targetApi="31">
         <activity
-            android:name=".view.TrailerActivity"
+            android:name=".fragment.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".view.DetailActivity"
+            android:name=".activity.TrailerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DetailActivity"
             android:exported="false"
             android:label="@string/title_activity_detail"
             android:theme="@style/Theme.Movies.NoActionBar" />
         <activity
-            android:name=".view.MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.Movies" />
         <activity
-            android:name=".view.SplashscreenActivity"
+            android:name=".activity.SplashscreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

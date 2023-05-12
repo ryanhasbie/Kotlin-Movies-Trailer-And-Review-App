@@ -1,9 +1,8 @@
-package com.ryan.movies.view
+package com.ryan.movies.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,7 +10,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ryan.movies.R
@@ -37,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var mainAdapter: MainAdapter
     private var movieCategory = 0
     private val api = ApiService().endpoint
+    private var isScrolling = false
+    private var currentPage = 1
+    private var totalPages = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -49,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         setupView()
         setupRecyclerView()
+        setupListener()
 
 //        val navController = findNavController(R.id.nav_host_fragment_content_main)
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
@@ -64,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         getMovie()
+        showLoadingNextPage(false)
     }
 
     private fun setupView() {}
@@ -85,10 +92,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupListener() {
+        val scrollView = findViewById<NestedScrollView>(R.id.scrollView)
+        scrollView.setOnScrollChangeListener(object : OnScrollChangeListener{
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
+                if (scrollY == v!!.getChildAt(0).measuredHeight - v.measuredHeight) {
+                    if (!isScrolling) {
+                        if (currentPage <= totalPages) {
+                            getMovieNextPage()
+                        }
+                    }
+                }
+            }
 
-    fun getMovie() {
+        })
+    }
+
+    private fun getMovie() {
+        val scrollView = findViewById<NestedScrollView>(R.id.scrollView)
+        scrollView.scrollTo(0,0)
+        currentPage = 1
         showLoading(true)
-
 
         var apiCall: Call<MovieResponse>? = null
         when(movieCategory) {
@@ -122,6 +152,42 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    fun getMovieNextPage() {
+        currentPage += 1
+        showLoadingNextPage(true)
+
+        var apiCall: Call<MovieResponse>? = null
+        when(movieCategory) {
+            moviePopular -> {
+                apiCall = api.getMoviePopular(Constant.API_KEY, currentPage)
+            }
+            movieNowPlaying -> {
+                apiCall = api.getMovieNowPlaying(Constant.API_KEY, currentPage)
+            }
+        }
+
+
+        apiCall!!
+            .enqueue(object : Callback<MovieResponse> {
+
+                override fun onResponse(
+                    call: Call<MovieResponse>,
+                    response: Response<MovieResponse>
+                ) {
+                    showLoadingNextPage(false)
+                    if (response.isSuccessful) {
+                        showMovieNextPage(response.body()!!)
+                    }
+                }
+
+                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                    Log.d(TAG, t.toString())
+                    showLoadingNextPage(false)
+                }
+
+            })
+    }
+
     fun showLoading(loading: Boolean) {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         when (loading) {
@@ -131,9 +197,32 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun showLoadingNextPage(loading: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBarNextPage)
+        when (loading) {
+            true -> {
+                isScrolling = true
+                progressBar.visibility = View.VISIBLE
+            }
+            false -> {
+                isScrolling = false
+                progressBar.visibility = View.GONE
+            }
+        }
+
+    }
+
     fun showMovie(response: MovieResponse) {
 //        Log.d(TAG, response.toString())
+        totalPages = response.total_pages!!.toInt()
         mainAdapter.setData(response.results)
+    }
+
+    fun showMovieNextPage(response: MovieResponse) {
+//        Log.d(TAG, response.toString())
+        totalPages = response.total_pages!!.toInt()
+        mainAdapter.setDataNextPage(response.results)
+        showMessage("page: $currentPage")
     }
 
     fun showMessage(message: String) {
